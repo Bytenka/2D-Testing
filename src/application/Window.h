@@ -24,7 +24,7 @@ public:
   inline void bindContext() const noexcept { glfwMakeContextCurrent(m_glfwWindow); } // Should be called before anything else related to graphics
   inline void unbindContext() const noexcept { glfwMakeContextCurrent(NULL); }
   inline void clear() const { glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); }
-  inline void draw() const noexcept { glfwSwapBuffers(m_glfwWindow); }
+  inline void display() const noexcept { glfwSwapBuffers(m_glfwWindow); }
   inline unsigned getWidth() const noexcept { return m_width; }
   inline unsigned getHeight() const noexcept { return m_height; }
   inline const std::string &getTitle() const noexcept { return m_title; }

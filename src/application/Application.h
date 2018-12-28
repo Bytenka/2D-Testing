@@ -1,9 +1,16 @@
 #pragma once
 
+#include "Window.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <string>
+#include <vector>
+#include <utility>
+#include <memory>
+
+#define WINDOW_NULL 0
 
 namespace tk
 {
@@ -11,22 +18,37 @@ typedef unsigned long long WindowUID;
 
 class Application
 {
-  public:
-    inline static Application &getInstance()
-    {
-        static Application instance;
-        return instance;
-    }
+public:
+  inline static Application &getInstance()
+  {
+    static Application instance;
+    return instance;
+  }
 
-    WindowUID createWindow(unsigned width, unsigned height, const std::string &title);
+  void runLoop();
+  WindowUID createWindow(unsigned width, unsigned height, const std::string &title);
+  void destroyWindow(WindowUID uid);
 
-  private:
-    Application();
-    ~Application();
+  Window *getInternalWindow(WindowUID uid) noexcept;
+  void updateWindowSize(GLFWwindow *window, int width, int height);
 
-  public:
-    Application(const Application &) = delete;
-    void operator=(const Application &) = delete;
+  inline void setMainWindow(WindowUID uid) noexcept { m_mainWindowUID = uid; }
+
+private:
+  Application();
+  ~Application();
+
+  std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator getWindowFromUID(WindowUID uid);
+  std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator getWindowFromGLFWwindow(GLFWwindow *window);
+
+private:
+  std::vector<std::pair<WindowUID, std::unique_ptr<Window>>> m_windows;
+  WindowUID m_mainWindowUID = WINDOW_NULL;
+  WindowUID m_windowUIDCounter = 1;
+
+public:
+  Application(const Application &) = delete;
+  void operator=(const Application &) = delete;
 };
 
 // callbacks:

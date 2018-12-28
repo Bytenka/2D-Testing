@@ -24,7 +24,7 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
         throw Exception("GLAD loader failed");
 
     glfwSwapInterval(1);
-    //glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
     // @TODO glfwSetWindowFocusCallback()
 
     // Setting up OpenGL. Functions are safe to call in that configuration
@@ -64,7 +64,7 @@ void Window::update() noexcept
     if (m_mouseIsInput)
     {
         glfwGetCursorPos(m_glfwWindow, &m_cursorTravel.x, &m_cursorTravel.y);
-        glfwSetCursorPos(m_glfwWindow, 0, 0); // Because GLFW won't do it for us...
+        glfwSetCursorPos(m_glfwWindow, 0, 0); // Because GLFW doesn't do it automatically
     }
 }
 
@@ -122,6 +122,6 @@ void Window::useMouseAsInput(bool value) noexcept
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) noexcept
 {
     //if (width != 0 && height != 0)
-    //    Application::getInstance().updateWindowSize(window, width, height);
+    //Application::getInstance().updateWindowSize(window, width, height);
 }
 } // namespace tk

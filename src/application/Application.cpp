@@ -5,6 +5,7 @@
 #include <system/exception/GLFWException.h>
 
 #include <iostream>
+#include <algorithm>
 
 namespace tk
 {
@@ -25,16 +26,144 @@ Application::Application()
 Application::~Application()
 {
     LOG_INFO("Application terminating");
+    m_windows.clear(); // Clears everything before calling glfwTerminate();
     glfwTerminate();
 }
 
 // public:
 
+void Application::runLoop()
+{
+    bool appShouldTerminate = false;
+    while (!appShouldTerminate)
+    {
+        for (int i = m_windows.size() - 1; i >= 0; i--)
+        {
+            auto &currentPair = m_windows[i];
+            auto &currentWindow = currentPair.second;
+
+            currentWindow->bindContext();
+
+            currentWindow->update();
+            currentWindow->clear();
+            currentWindow->display();
+
+            currentWindow->unbindContext();
+
+            if (currentWindow->shouldClose())
+            {
+                if (currentPair.first == m_mainWindowUID)
+                    appShouldTerminate = true;
+
+                m_windows.erase(m_windows.begin() + i);
+            }
+        }
+        if (m_windows.empty())
+            appShouldTerminate = true;
+    }
+}
+
 WindowUID Application::createWindow(unsigned width, unsigned height, const std::string &title)
 {
-    return 0;
+    try
+    {
+        auto newWindowPtr(std::make_unique<Window>(width, height, title));
+
+        WindowUID uid = m_windowUIDCounter++;
+        auto newPair(std::make_pair(uid, std::move(newWindowPtr)));
+        m_windows.push_back(std::move(newPair));
+
+        return uid;
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Cannot create new Window \"{}\": {}", title, e.what());
+        return WINDOW_NULL;
+    }
 }
+
+void Application::destroyWindow(WindowUID uid)
+{
+    try
+    {
+        if (uid == WINDOW_NULL)
+            throw Exception("Window is null");
+
+        if (uid == m_mainWindowUID)
+        {
+            LOG_TRACE("Destroying main window -> destroying all windows");
+            m_windows.clear();
+            m_mainWindowUID = WINDOW_NULL;
+            m_windowUIDCounter = 1;
+        }
+        else
+        {
+            m_windows.erase(getWindowFromUID(uid));
+        }
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Cannot destroy window with UID \"{}\": {}", uid, e.what());
+    }
+}
+
+Window *Application::getInternalWindow(WindowUID uid) noexcept
+{
+    try
+    {
+        return getWindowFromUID(uid)->second.get();
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Unable to find window with UID \"{}\": ", uid, e.what());
+        return nullptr;
+    }
+}
+
+void Application::updateWindowSize(GLFWwindow *window, int width, int height)
+{
+    try
+    {
+        auto it = getWindowFromGLFWwindow(window);
+        it->second->updateSize(width, height);
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Could not update window size: {}", e.what());
+    }
+}
+
 // private:
+
+std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application::getWindowFromUID(WindowUID uid)
+{
+    auto it = std::find_if(
+        m_windows.begin(),
+        m_windows.end(),
+        [&](const std::pair<WindowUID, std::unique_ptr<Window>> &current) {
+            return current.first == uid;
+        });
+
+    if (it == m_windows.end())
+        throw Exception("Unable to find window. Window does not exist");
+
+    return it;
+}
+
+std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application::getWindowFromGLFWwindow(GLFWwindow *window)
+{
+    auto it = std::find_if(
+        m_windows.begin(),
+        m_windows.end(),
+        [&](const std::pair<WindowUID, std::unique_ptr<Window>> &current) {
+            return (current.second->getGLFWwindow()) == window;
+        });
+
+    if (it == m_windows.end())
+        throw Exception("Unable to find GLFW window. Window does not exist");
+
+    return it;
+}
 
 // callbacks:
 

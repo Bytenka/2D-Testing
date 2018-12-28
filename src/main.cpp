@@ -12,17 +12,19 @@ int main(int argc, char *argv[])
     try
     {
         tk::Application &app = tk::Application::getInstance();
+        tk::WindowUID mainWindow = app.createWindow(100, 100, "TESTLIAS");
 
-        tk::WindowUID mainWindow = app.createWindow(1280, 720, "TESTLIAS");
+        tk::Window *w = app.getInternalWindow(mainWindow);
+        w->setIcon("res/icon.png");
+        w->setClearColor(0, 0, 0);
 
-        tk::Window w(1280, 720, "TESTLIAS");
-        w.setIcon("res/icon.png");
+        app.runLoop();
     }
     catch (tk::Exception &e)
     {
         std::cout << "------ Stopping on exception ------\n"
                   << e.what() << std::endl;
-        return -1;
+        return -1; // Or re-throw, not sure...
     }
     return 0;
 }
