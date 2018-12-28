@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     try
     {
         tk::Application &app = tk::Application::getInstance();
-        tk::WindowUID mainWindow = app.createWindow(100, 100, "TESTLIAS");
+        tk::WindowUID mainWindow = app.createWindow(1280, 720, "TESTLIAS");
 
         tk::Window *w = app.getInternalWindow(mainWindow);
         w->setIcon("res/icon.png");

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include <graphics/Shader.h>
+
 namespace tk
 {
 Application::Application()
@@ -34,6 +36,12 @@ Application::~Application()
 
 void Application::runLoop()
 {
+    m_windows[0].second->bindContext();
+    Shader s;
+    s.load("res/shaders/default.vert", "res/shaders/default.frag");
+    s.enable();
+    m_windows[0].second->unbindContext();
+
     bool appShouldTerminate = false;
     while (!appShouldTerminate)
     {

@@ -1,0 +1,52 @@
+#pragma once
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+
+#include "GLCheck.h"
+
+#include <string>
+#include <vector>
+#include <utility>
+
+namespace tk
+{
+class Shader
+{
+public:
+  Shader();
+  ~Shader();
+
+  inline void enable() const noexcept { glCheck(glUseProgram(m_shaderProgram)); }
+  inline void disable() const noexcept { glCheck(glUseProgram(0)); }
+  void load(const std::string &vertPath, const std::string &fragPath);
+  void reload();
+
+  void setUniform1i(const std::string &uniformName, int i);
+  void setUniform1f(const std::string &uniformName, float f);
+  void setUniform2f(const std::string &uniformName, float x, float y);
+  void setUniform3f(const std::string &uniformName, float x, float y, float z);
+  void setUniform4f(const std::string &uniformName, float x, float y, float z, float w);
+  void setUniformMatrix4fv(const std::string &uniformName, const glm::mat4 &transform);
+
+private:
+  void createShader(GLenum shaderType);
+  void deleteShader(GLenum shaderType);
+  void createProgram();
+  void deleteProgram() noexcept;
+
+  GLint getUniformLocation(const std::string &uniformName);
+
+private:
+  std::string m_vertPath;
+  std::string m_fragPath;
+
+  GLuint m_vertexShader = 0, m_fragmentShader = 0, m_shaderProgram = 0;
+  std::vector<std::pair<std::string, GLint>> m_uniformCache;
+
+public:
+  Shader(const Shader &) = delete;
+  void operator=(const Shader &) = delete;
+};
+
+} // namespace tk
