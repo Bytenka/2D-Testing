@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Application.h"
 
 #include <system/exception/Exception.h>
 #include <system/Log.h>
@@ -121,7 +122,7 @@ void Window::useMouseAsInput(bool value) noexcept
 // callbacks:
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) noexcept
 {
-    //if (width != 0 && height != 0)
-    //Application::getInstance().updateWindowSize(window, width, height);
+    if (width != 0 && height != 0)
+        Application::getInstance().updateWindowSize(window, width, height);
 }
 } // namespace tk
