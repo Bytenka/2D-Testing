@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 
         tk::Window *w = app.getInternalWindow(mainWindow);
         w->setIcon("res/icon.png");
+        w->useMouseAsInput(false);
         w->setClearColor(0, 0, 0);
 
         app.runLoop();
