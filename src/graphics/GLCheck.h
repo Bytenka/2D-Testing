@@ -1,6 +1,8 @@
 #pragma once
 
-#ifdef DEBUG
+#include <Main.h>
+
+#ifdef TK_DEBUG
 #define glCheck(func)                                \
     do                                               \
     {                                                \

@@ -1,5 +1,6 @@
 #include "Log.h"
 
+#include <Main.h>
 #include "exception/Exception.h"
 
 #include <iostream>
@@ -21,7 +22,7 @@ void Log::init()
         {
             s_mainLogger = spdlog::stdout_color_mt("console");
 
-#ifdef DEBUG
+#ifdef TK_DEBUG
             s_mainLogger->set_level(spdlog::level::trace);
 #else
             s_mainLogger->set_level(spdlog::level::info);

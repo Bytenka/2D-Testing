@@ -7,12 +7,18 @@
 
 namespace tk
 {
+static std::string errorName;
+static std::string msg;
+
 void checkOpenGLError(const char *expr, const char *file_name, unsigned line)
 {
     GLenum err;
 
-    std::string errorName;
-    std::string msg;
+    if (!errorName.empty())
+        errorName.clear();
+
+    if (!msg.empty())
+        msg.clear();
 
     bool gotAnError = false;
     while ((err = glGetError()) != GL_NO_ERROR)
