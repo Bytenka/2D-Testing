@@ -179,6 +179,10 @@ void Shader::createProgram()
         throw Exception("Linking error: " + std::string(infoLog));
     }
 
+    // Detach so they can actually be deleted after that
+    glCheck(glDetachShader(prog, m_vertexShader));
+    glCheck(glDetachShader(prog, m_fragmentShader));
+
     m_shaderProgram = prog;
 }
 
