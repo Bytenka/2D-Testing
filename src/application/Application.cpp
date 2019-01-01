@@ -47,8 +47,7 @@ void Application::runLoop()
         0, 2, 3};
 
     m_windows[0].second->bindContext();
-    Shader s;
-    s.load("res/shaders/default.vert", "res/shaders/default.frag");
+    Shader s("res/shaders/default.vert", "res/shaders/default.frag");
     s.enable();
 
     GLuint vao, vbo, ebo;
@@ -72,8 +71,7 @@ void Application::runLoop()
 
     m_windows[0].second->unbindContext();
 
-    bool appShouldTerminate = false;
-    while (!appShouldTerminate)
+    while (!m_shouldTerminate)
     {
         for (int i = m_windows.size() - 1; i >= 0; i--)
         {
@@ -96,17 +94,17 @@ void Application::runLoop()
             if (currentWindow->shouldClose())
             {
                 if (currentPair.first == m_mainWindowUID)
-                    appShouldTerminate = true;
+                    m_shouldTerminate = true;
 
                 m_windows.erase(m_windows.begin() + i);
             }
         }
         if (m_windows.empty())
-            appShouldTerminate = true;
+            m_shouldTerminate = true;
     }
 }
 
-WindowUID Application::createWindow(unsigned width, unsigned height, const std::string &title)
+WindowUID Application::createWindow(unsigned width, unsigned height, const std::string &title) noexcept
 {
     try
     {
@@ -125,7 +123,7 @@ WindowUID Application::createWindow(unsigned width, unsigned height, const std::
     }
 }
 
-void Application::destroyWindow(WindowUID uid)
+void Application::destroyWindow(WindowUID uid) noexcept
 {
     try
     {
@@ -163,19 +161,6 @@ Window *Application::getInternalWindow(WindowUID uid) noexcept
     }
 }
 
-void Application::updateWindowSize(GLFWwindow *window, int width, int height)
-{
-    try
-    {
-        auto it = getWindowFromGLFWwindow(window);
-        it->second->updateSize(width, height);
-    }
-    catch (Exception &e)
-    {
-        LOG_ERROR("Could not update window size: {}", e.what());
-    }
-}
-
 // private:
 
 std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application::getWindowFromUID(WindowUID uid)
@@ -210,7 +195,7 @@ std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application
 
 // callbacks:
 
-void glfw_error_callback(int error_code, const char *description)
+void Application::glfw_error_callback(int error_code, const char *description)
 {
     throw GLFWException(description, error_code);
 }

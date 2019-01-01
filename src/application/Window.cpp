@@ -1,5 +1,4 @@
 #include "Window.h"
-#include "Application.h"
 
 #include <system/exception/Exception.h>
 #include <system/Log.h>
@@ -25,6 +24,8 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
         throw Exception("GLAD loader failed");
 
     glfwSwapInterval(1);
+
+    glfwSetWindowUserPointer(newWindow, this); // Used to get back Window object in callbacks
     glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
     // @TODO glfwSetWindowFocusCallback()
 
@@ -61,24 +62,31 @@ void Window::update() noexcept
 {
     glfwPollEvents();
 
-    m_cursorTravel = glm::dvec2(0);
+    // Behavior changes depending on the input method.
+    // glfwGetCursorPos returns the offset between calls when cursor is disabled,
+    // and the real (relative) position of the cursor otherwise
+    glfwGetCursorPos(m_glfwWindow, &m_cursorPos.x, &m_cursorPos.y);
     if (m_mouseIsInput)
-    {
-        glfwGetCursorPos(m_glfwWindow, &m_cursorTravel.x, &m_cursorTravel.y);
         glfwSetCursorPos(m_glfwWindow, 0, 0); // Because GLFW doesn't do it automatically
-    }
 }
 
 void Window::setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) const noexcept
 {
-    glCheck(glClearColor(
-        red / 255.0f,
-        green / 255.0f,
-        blue / 255.0f,
-        alpha / 255.0f));
+    try
+    {
+        glCheck(glClearColor(
+            red / 255.0f,
+            green / 255.0f,
+            blue / 255.0f,
+            alpha / 255.0f));
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Unable to set clear color: {}", e.what());
+    }
 }
 
-void Window::setIcon(const std::string &imgPath)
+void Window::setIcon(const std::string &imgPath) noexcept
 {
     try
     {
@@ -101,28 +109,32 @@ void Window::updateSize(int width, int height) noexcept
 {
     m_width = width;
     m_height = height;
-    glCheck(glViewport(0, 0, width, height));
+
+    try
+    {
+        glCheck(glViewport(0, 0, width, height));
+    }
+    catch (Exception &e)
+    {
+        LOG_ERROR("Could not resize window correctly: {}", e.what());
+    }
 }
 
 void Window::useMouseAsInput(bool value) noexcept
 {
     if (value)
-    {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        //updateCursorPosition(m_width / 2.0, m_height / 2.0);
-    }
+
     else
-    {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
 
     m_mouseIsInput = value;
 }
 
 // callbacks:
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) noexcept
+void Window::framebuffer_size_callback(GLFWwindow *window, int width, int height) noexcept
 {
     if (width != 0 && height != 0)
-        Application::getInstance().updateWindowSize(window, width, height);
+        ((Window *)glfwGetWindowUserPointer(window))->updateSize(width, height);
 }
 } // namespace tk
