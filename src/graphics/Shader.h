@@ -14,13 +14,12 @@ namespace tk
 class Shader
 {
 public:
-  Shader();
+  Shader(const std::string &vertPath, const std::string &fragPath);
   ~Shader();
 
-  inline void enable() const noexcept { glCheck(glUseProgram(m_shaderProgram)); }
-  inline void disable() const noexcept { glCheck(glUseProgram(0)); }
-  void load(const std::string &vertPath, const std::string &fragPath);
-  void reload();
+  inline void enable() const { glCheck(glUseProgram(m_shaderProgram)); }
+  inline void disable() const { glCheck(glUseProgram(0)); }
+  void reload(); // Shader need to be re-enabled after calling this function
 
   void setUniform1i(const std::string &uniformName, int i);
   void setUniform1f(const std::string &uniformName, float f);
@@ -30,10 +29,11 @@ public:
   void setUniformMatrix4fv(const std::string &uniformName, const glm::mat4 &transform);
 
 private:
-  void createShader(GLenum shaderType);
-  void deleteShader(GLenum shaderType);
-  void createProgram();
-  void deleteProgram() noexcept;
+  GLuint build(const std::string &vertPath, const std::string &fragPath) const;
+  GLuint createShader(const std::string &filePath, GLenum shaderType) const;
+  GLuint createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) const;
+  inline void deleteShader(GLuint shaderID) const noexcept { glCheck(glDeleteShader(shaderID)); }
+  inline void deleteProgram(GLuint programID) const noexcept { glCheck(glDeleteProgram(m_shaderProgram)); }
 
   GLint getUniformLocation(const std::string &uniformName);
 

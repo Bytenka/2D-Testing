@@ -2,6 +2,7 @@
 #include "Shader.h"
 
 #include <system/exception/Exception.h>
+#include <system/exception/InvalidArgumentException.h>
 #include <system/Log.h>
 #include <system/utils.h>
 
@@ -10,22 +11,30 @@
 namespace tk
 {
 
-Shader::Shader()
+Shader::Shader(const std::string &vertPath, const std::string &fragPath)
+    : m_vertPath(vertPath), m_fragPath(fragPath)
 {
+    m_shaderProgram = build(vertPath, fragPath);
+    LOG_INFO("Loaded shader \"{}, {}\"", m_vertPath, m_fragPath);
 }
 
 Shader::~Shader()
 {
-    deleteProgram();
+    deleteProgram(m_shaderProgram);
 }
 
 // public:
 
 void Shader::reload()
 {
-    LOG_DEBUG("Reloading shader \"{}, {}\"...", m_vertPath, m_fragPath);
-    deleteProgram();
-    load(m_vertPath, m_fragPath);
+    GLuint tempSha = build(m_vertPath, m_fragPath);
+
+    disable(); // Just to force the user to re-enable the shader
+    deleteProgram(m_shaderProgram);
+    m_uniformCache.clear();
+    m_shaderProgram = tempSha;
+
+    LOG_DEBUG("Reloaded shader \"{}, {}\"...", m_vertPath, m_fragPath);
 }
 
 void Shader::setUniform1i(const std::string &uniformName, int i)
@@ -66,53 +75,25 @@ void Shader::setUniformMatrix4fv(const std::string &uniformName, const glm::mat4
 
 // private:
 
-void Shader::load(const std::string &vertPath, const std::string &fragPath)
+GLuint Shader::build(const std::string &vertPath, const std::string &fragPath) const
 {
-    std::string prevVert = m_vertPath;
-    std::string prevFrag = m_fragPath;
-    try
-    {
-        m_vertPath = vertPath;
-        m_fragPath = fragPath;
+    GLuint vertSha = createShader(vertPath, GL_VERTEX_SHADER);
+    GLuint fragSha = createShader(fragPath, GL_FRAGMENT_SHADER);
 
-        createShader(GL_VERTEX_SHADER);
-        createShader(GL_FRAGMENT_SHADER);
+    GLuint sha = createProgram(vertSha, fragSha);
 
-        createProgram();
+    deleteShader(vertSha);
+    deleteShader(fragSha);
 
-        deleteShader(GL_VERTEX_SHADER);
-        deleteShader(GL_FRAGMENT_SHADER);
-
-        LOG_INFO("Loaded shader \"{}, {}\"", m_vertPath, m_fragPath);
-    }
-    catch (Exception &e)
-    {
-        m_vertPath = prevVert;
-        m_fragPath = prevFrag;
-        LOG_ERROR("Could not create shader: {}", e.what());
-    }
+    return sha;
 }
 
-void Shader::createShader(GLenum shaderType)
+GLuint Shader::createShader(const std::string &filePath, GLenum shaderType) const
 {
-    GLuint *toModify = nullptr;
-    std::string *toModifyPath = nullptr;
-    switch (shaderType)
-    {
-    case GL_VERTEX_SHADER:
-        toModify = &m_vertexShader;
-        toModifyPath = &m_vertPath;
-        break;
-    case GL_FRAGMENT_SHADER:
-        toModify = &m_fragmentShader;
-        toModifyPath = &m_fragPath;
-        break;
-    default:
-        throw std::invalid_argument("Shader type unsupported or incorrect");
-        break;
-    }
+    if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER)
+        throw InvalidArgumentException("Shader type invalid or unsupported");
 
-    std::string shaSourceStr(read_file(toModifyPath->c_str()));
+    std::string shaSourceStr(read_file(filePath.c_str()));
     const char *shaSource = shaSourceStr.c_str();
 
     GLuint sha;
@@ -133,40 +114,18 @@ void Shader::createShader(GLenum shaderType)
         throw Exception("Compilation error: " + std::string(infoLog));
     }
 
-    *toModify = sha;
+    return sha;
 }
 
-void Shader::deleteShader(GLenum shaderType)
-{
-    switch (shaderType)
-    {
-    case GL_VERTEX_SHADER:
-        if (m_vertexShader != 0)
-            glCheck(glDeleteShader(m_vertexShader));
-
-        m_vertexShader = 0;
-        break;
-    case GL_FRAGMENT_SHADER:
-        if (m_fragmentShader != 0)
-            glCheck(glDeleteShader(m_fragmentShader));
-
-        m_fragmentShader = 0;
-        break;
-    default:
-        throw std::invalid_argument("Shader type unsupported or incorrect");
-        break;
-    }
-}
-
-void Shader::createProgram()
+GLuint Shader::createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) const
 {
     GLuint prog;
     glCheck(prog = glCreateProgram());
     if (prog == 0)
         throw Exception("OpenGL call to create program shader failed. Is context valid?");
 
-    glCheck(glAttachShader(prog, m_vertexShader));
-    glCheck(glAttachShader(prog, m_fragmentShader));
+    glCheck(glAttachShader(prog, vertexShaderID));
+    glCheck(glAttachShader(prog, fragmentShaderID));
     glCheck(glLinkProgram(prog));
 
     // Error checking
@@ -180,18 +139,10 @@ void Shader::createProgram()
     }
 
     // Detach so they can actually be deleted after that
-    glCheck(glDetachShader(prog, m_vertexShader));
-    glCheck(glDetachShader(prog, m_fragmentShader));
+    glCheck(glDetachShader(prog, vertexShaderID));
+    glCheck(glDetachShader(prog, fragmentShaderID));
 
-    m_shaderProgram = prog;
-}
-
-void Shader::deleteProgram() noexcept
-{
-    if (m_shaderProgram != 0)
-        glCheck(glDeleteProgram(m_shaderProgram));
-
-    m_uniformCache.clear();
+    return prog;
 }
 
 GLint Shader::getUniformLocation(const std::string &uniformName)
@@ -211,7 +162,7 @@ GLint Shader::getUniformLocation(const std::string &uniformName)
     glCheck(newValue = glGetUniformLocation(m_shaderProgram, uniformName.c_str()));
 
     if (newValue == -1)
-        throw std::invalid_argument("Uniform \"" + uniformName + "\" does not exist or is invalid");
+        throw InvalidArgumentException("Uniform \"" + uniformName + "\" does not exist or is invalid");
 
     m_uniformCache.push_back(std::make_pair(uniformName, newValue));
 
