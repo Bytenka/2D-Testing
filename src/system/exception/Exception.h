@@ -1,3 +1,8 @@
+/*
+ * Standard exception class to report error through the program
+ * Every other exception must inherit from this class
+ */
+
 #pragma once
 
 #include <exception>

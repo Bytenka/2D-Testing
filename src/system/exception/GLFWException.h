@@ -16,8 +16,13 @@ public:
     m_msg += "):\n  " + std::string(message);
   }
 
+  explicit GLFWException(const std::string &message, int error_code)
+      : GLFWException(message.c_str(), error_code) // Delegated constructor
+  {
+  }
+
   virtual ~GLFWException() noexcept
   {
   }
 };
-}
+} // namespace tk

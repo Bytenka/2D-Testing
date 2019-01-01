@@ -9,7 +9,7 @@ namespace tk
 class OpenGLException : public Exception
 {
 public:
-  explicit OpenGLException(const char *file, unsigned line, const char *errorName, const char *message)
+  OpenGLException(const char *file, unsigned line, const char *errorName, const char *message)
       : Exception(message), m_inFile(file), m_atLine(line)
   {
     std::stringstream toHex;
@@ -32,4 +32,4 @@ protected:
   std::string m_inFile;
   unsigned m_atLine;
 };
-}
+} // namespace tk
