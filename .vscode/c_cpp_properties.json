@@ -3,7 +3,6 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/",
                 "${workspaceFolder}/src",
                 "/home/hugo/Dropbox/OpenGL/Libraries/Includes",
                 "${workspaceFolder}/vendor/spdlog/include",
