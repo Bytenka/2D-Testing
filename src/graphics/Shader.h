@@ -14,13 +14,14 @@ namespace tk
 class Shader
 {
 public:
-  Shader(const std::string &vertPath, const std::string &fragPath);
+  Shader();
   ~Shader();
-
-  inline void destroy() noexcept { deleteProgram(m_shaderProgram); m_shaderProgram = 0; } // @TODO Remove -> used to force deletion of shader -> remove when RenderEngine class is ready
-
+  
   inline void enable() const { glCheck(glUseProgram(m_shaderProgram)); }
   inline void disable() const { glCheck(glUseProgram(0)); }
+
+  void load(const std::string &vertPath, const std::string &fragPath);
+  void dispose();
   void reload(); // Shader need to be re-enabled after calling this function
 
   void setUniform1i(const std::string &uniformName, int i);
@@ -34,8 +35,8 @@ private:
   GLuint build(const std::string &vertPath, const std::string &fragPath) const;
   GLuint createShader(const std::string &filePath, GLenum shaderType) const;
   GLuint createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) const;
-  inline void deleteShader(GLuint shaderID) const noexcept { glCheck(glDeleteShader(shaderID)); }
-  inline void deleteProgram(GLuint programID) const noexcept { glCheck(glDeleteProgram(m_shaderProgram)); }
+  inline void deleteShader(GLuint shaderID) const { glCheck(glDeleteShader(shaderID)); }
+  inline void deleteProgram(GLuint programID) const { glCheck(glDeleteProgram(m_shaderProgram)); }
 
 
   GLint getUniformLocation(const std::string &uniformName);
@@ -44,6 +45,7 @@ private:
   std::string m_vertPath;
   std::string m_fragPath;
 
+  bool m_loaded = false;
   GLuint m_vertexShader = 0, m_fragmentShader = 0, m_shaderProgram = 0;
   std::vector<std::pair<std::string, GLint>> m_uniformCache;
 
