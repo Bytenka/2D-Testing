@@ -35,3 +35,6 @@ optimize "On"
 
 filter {"files:**.c"}
 flags {"NoPCH"}
+
+filter {"action:vs*"}
+defines {"_CRT_SECURE_NO_WARNINGS"}

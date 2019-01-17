@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <maths/Maths.h>
 #include <graphics/GLCheck.h>
+#include <graphics/Renderer.h>
 
 #include <string>
 
@@ -20,11 +21,9 @@ public:
   void setIcon(const std::string &imgPath) noexcept;
   void updateSize(int width, int height) noexcept;
   void useMouseAsInput(bool value) noexcept;
+  void display() const;
 
-  inline void bindContext() const noexcept { glfwMakeContextCurrent(m_glfwWindow); } // Should be called before anything else related to graphics
-  inline void unbindContext() const noexcept { glfwMakeContextCurrent(NULL); }
-  inline void clear() const { glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)); }
-  inline void display() const noexcept { glfwSwapBuffers(m_glfwWindow); }
+  void clear() const;
   inline unsigned getWidth() const noexcept { return m_width; }
   inline unsigned getHeight() const noexcept { return m_height; }
   inline const std::string &getTitle() const noexcept { return m_title; }
@@ -34,6 +33,12 @@ public:
   inline bool shouldClose() const noexcept { return glfwWindowShouldClose(m_glfwWindow); }
 
 private:
+  inline void bindContext() const noexcept { if (glfwGetCurrentContext() != m_glfwWindow) glfwMakeContextCurrent(m_glfwWindow); }
+  inline void unbindContext() const noexcept { if (glfwGetCurrentContext() == m_glfwWindow) glfwMakeContextCurrent(NULL); }
+
+private:
+  Renderer m_renderer;
+
   std::string m_title;
   unsigned m_width;
   unsigned m_height;

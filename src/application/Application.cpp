@@ -37,71 +37,21 @@ Application::~Application()
 
 void Application::runLoop()
 {
-    GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f};
-
-    GLuint indices[] = {
-        0, 1, 2,
-        0, 2, 3};
-
-    m_windows[0].second->bindContext();
-    Shader s("res/shaders/default.vert", "res/shaders/default.frag");
-    s.enable();
-
-    GLuint vao, vbo, ebo;
-    glCheck(glGenVertexArrays(1, &vao));
-    glCheck(glGenBuffers(1, &vbo));
-    glCheck(glGenBuffers(1, &ebo));
-
-    glCheck(glBindVertexArray(vao));
-
-    glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    glCheck(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-    glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, (void *)0));
-    glCheck(glEnableVertexAttribArray(0));
-
-    glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
-    glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
-    glCheck(glVertexAttribPointer(1, 3, GL_UNSIGNED_INT, false, 0, (void *)0));
-    glCheck(glEnableVertexAttribArray(1));
-
-    glCheck(glBindVertexArray(0));
-
-    m_windows[0].second->unbindContext();
-
     while (!m_shouldTerminate)
     {
         for (int i = m_windows.size() - 1; i >= 0; i--)
         {
             auto &currentPair = m_windows[i];
             auto &currentWindow = currentPair.second;
-
-            currentWindow->bindContext();
-
+			
             currentWindow->update();
             currentWindow->clear();
-
-            glCheck(glBindVertexArray(vao));
-            glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0));
-            glCheck(glBindVertexArray(0));
-
             currentWindow->display();
-
-            currentWindow->unbindContext();
 
             if (currentWindow->shouldClose())
             {
                 if (currentPair.first == m_mainWindowUID)
                     m_shouldTerminate = true;
-
-				// @TODO Debug: delete the shader while the context is still valid.
-				// This will be moved when a RenderEngine will attached to the window
-				currentWindow->bindContext();
-				s.destroy();
-				currentWindow->unbindContext();
 
                 m_windows.erase(m_windows.begin() + i);
             }
