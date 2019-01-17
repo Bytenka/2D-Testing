@@ -8,8 +8,8 @@ class Window;
 
 class Renderer
 {
-public:
-	Renderer(const Window* attachedWindow);
+  public:
+	Renderer(const Window *attachedWindow);
 	~Renderer();
 
 	void init();
@@ -17,10 +17,9 @@ public:
 
 	void drawNewFrame() const;
 
-private:
-	
-private:
-	const Window* m_attachedWindow;
+  private:
+  private:
+	const Window *m_attachedWindow;
 
 	Shader m_mainShader;
 	bool m_initialized = false;

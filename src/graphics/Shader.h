@@ -16,7 +16,7 @@ class Shader
 public:
   Shader();
   ~Shader();
-  
+
   inline void enable() const { glCheck(glUseProgram(m_shaderProgram)); }
   inline void disable() const { glCheck(glUseProgram(0)); }
 
@@ -37,7 +37,6 @@ private:
   GLuint createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) const;
   inline void deleteShader(GLuint shaderID) const { glCheck(glDeleteShader(shaderID)); }
   inline void deleteProgram(GLuint programID) const { glCheck(glDeleteProgram(m_shaderProgram)); }
-
 
   GLint getUniformLocation(const std::string &uniformName);
 

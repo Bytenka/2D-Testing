@@ -33,8 +33,16 @@ public:
   inline bool shouldClose() const noexcept { return glfwWindowShouldClose(m_glfwWindow); }
 
 private:
-  inline void bindContext() const noexcept { if (glfwGetCurrentContext() != m_glfwWindow) glfwMakeContextCurrent(m_glfwWindow); }
-  inline void unbindContext() const noexcept { if (glfwGetCurrentContext() == m_glfwWindow) glfwMakeContextCurrent(NULL); }
+  inline void bindContext() const noexcept
+  {
+    if (glfwGetCurrentContext() != m_glfwWindow)
+      glfwMakeContextCurrent(m_glfwWindow);
+  }
+  inline void unbindContext() const noexcept
+  {
+    if (glfwGetCurrentContext() == m_glfwWindow)
+      glfwMakeContextCurrent(NULL);
+  }
 
 private:
   Renderer m_renderer;

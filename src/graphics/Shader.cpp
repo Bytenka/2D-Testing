@@ -15,33 +15,33 @@ Shader::Shader()
 
 Shader::~Shader()
 {
-	if (m_loaded)
-		LOG_CRITICAL("Shader destructor called but resources were not freed. GPU memory leak");
+    if (m_loaded)
+        LOG_CRITICAL("Shader destructor called but resources were not freed. GPU memory leak");
 }
 
 // public:
 
 void Shader::load(const std::string &vertPath, const std::string &fragPath)
 {
-	if (m_loaded)
-		dispose();
+    if (m_loaded)
+        dispose();
 
-	m_vertPath = vertPath;
-	m_fragPath = fragPath;
-	m_shaderProgram = build(vertPath, fragPath);
-	LOG_INFO("Loaded shader \"{}, {}\"", m_vertPath, m_fragPath);
+    m_vertPath = vertPath;
+    m_fragPath = fragPath;
+    m_shaderProgram = build(vertPath, fragPath);
+    LOG_INFO("Loaded shader \"{}, {}\"", m_vertPath, m_fragPath);
 }
 
 void Shader::dispose()
 {
-	if (!m_loaded)
-		return;
+    if (!m_loaded)
+        return;
 
-	deleteProgram(m_shaderProgram);
+    deleteProgram(m_shaderProgram);
 
-	m_vertPath.clear();
-	m_fragPath.clear();
-	m_loaded = false;
+    m_vertPath.clear();
+    m_fragPath.clear();
+    m_loaded = false;
 }
 
 void Shader::reload()

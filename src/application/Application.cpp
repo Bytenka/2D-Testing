@@ -43,7 +43,7 @@ void Application::runLoop()
         {
             auto &currentPair = m_windows[i];
             auto &currentWindow = currentPair.second;
-			
+
             currentWindow->update();
             currentWindow->clear();
             currentWindow->display();

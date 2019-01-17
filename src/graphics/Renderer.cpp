@@ -12,20 +12,18 @@ GLfloat vertices[] = {
 	-0.5f, -0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
 	0.5f, 0.5f, 0.0f,
-	-0.5f, 0.5f, 0.0f };
+	-0.5f, 0.5f, 0.0f};
 
 GLuint indices[] = {
 	0, 1, 2,
-	0, 2, 3 };
+	0, 2, 3};
 
 GLuint vao, vbo, ebo;
 
-Renderer::Renderer(const Window* attachedWindow)
+Renderer::Renderer(const Window *attachedWindow)
 	: m_attachedWindow(attachedWindow)
 {
-
 }
-
 
 Renderer::~Renderer()
 {
@@ -81,7 +79,6 @@ void Renderer::drawNewFrame() const
 
 	m_mainShader.disable();
 }
-
 
 // private:
 

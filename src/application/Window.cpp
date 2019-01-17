@@ -19,7 +19,7 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
     if (newWindow == NULL)
         throw Exception("Unable to create window");
 
-	glfwMakeContextCurrent(newWindow);
+    glfwMakeContextCurrent(newWindow);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         throw Exception("GLAD loader failed");
@@ -42,21 +42,21 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
     glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     m_glfwWindow = newWindow;
-	m_renderer.init();
+    m_renderer.init();
 
-	glfwMakeContextCurrent(NULL); // Calls after this should bind and unbind the context
+    glfwMakeContextCurrent(NULL); // Calls after this should bind and unbind the context
 
     setClearColor(0, 127, 127);
     useMouseAsInput(true);
-	
+
     LOG_INFO("Created new window \"{}\" ({}, {})", m_title, m_width, m_height);
 }
 
 Window::~Window()
 {
-	bindContext();
-	m_renderer.dispose();
-	unbindContext();
+    bindContext();
+    m_renderer.dispose();
+    unbindContext();
 
     LOG_INFO("Destroying window \"{}\"", m_title);
     glfwDestroyWindow(m_glfwWindow);
@@ -66,7 +66,7 @@ Window::~Window()
 
 void Window::update() noexcept
 {
-	bindContext();
+    bindContext();
 
     glfwPollEvents();
 
@@ -77,12 +77,12 @@ void Window::update() noexcept
     if (m_mouseIsInput)
         glfwSetCursorPos(m_glfwWindow, 0, 0); // Because GLFW doesn't do it automatically
 
-	unbindContext();
+    unbindContext();
 }
 
 void Window::setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) const noexcept
 {
-	bindContext();
+    bindContext();
 
     try
     {
@@ -97,7 +97,7 @@ void Window::setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alp
         LOG_ERROR("Unable to set clear color: {}", e.what());
     }
 
-	unbindContext();
+    unbindContext();
 }
 
 void Window::setIcon(const std::string &imgPath) noexcept
@@ -121,7 +121,7 @@ void Window::setIcon(const std::string &imgPath) noexcept
 
 void Window::updateSize(int width, int height) noexcept
 {
-	bindContext();
+    bindContext();
 
     m_width = width;
     m_height = height;
@@ -135,7 +135,7 @@ void Window::updateSize(int width, int height) noexcept
         LOG_ERROR("Could not resize window correctly: {}", e.what());
     }
 
-	unbindContext();
+    unbindContext();
 }
 
 void Window::useMouseAsInput(bool value) noexcept
@@ -150,22 +150,22 @@ void Window::useMouseAsInput(bool value) noexcept
 }
 
 void Window::display() const
-{ 
-	bindContext();
+{
+    bindContext();
 
-	m_renderer.drawNewFrame();
-	glfwSwapBuffers(m_glfwWindow); 
+    m_renderer.drawNewFrame();
+    glfwSwapBuffers(m_glfwWindow);
 
-	unbindContext();
+    unbindContext();
 }
 
 void Window::clear() const
 {
-	bindContext();
+    bindContext();
 
-	glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	unbindContext();
+    unbindContext();
 }
 
 // callbacks:
