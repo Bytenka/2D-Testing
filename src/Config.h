@@ -3,7 +3,7 @@
 
 #elif defined(_WIN32)
 #define TK_PLATFORM_WINDOWS
-#warning Support for this platform is incomplete and may cause crashes
+#pragma message ("Support for this platform is incomplete and may cause crashes")
 
 #else
 #error This platform is not supported

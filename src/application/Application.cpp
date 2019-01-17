@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Application.h"
 
 #include <system/Log.h>
@@ -95,6 +96,12 @@ void Application::runLoop()
             {
                 if (currentPair.first == m_mainWindowUID)
                     m_shouldTerminate = true;
+
+				// @TODO Debug: delete the shader while the context is still valid.
+				// This will be moved when a RenderEngine will attached to the window
+				currentWindow->bindContext();
+				s.destroy();
+				currentWindow->unbindContext();
 
                 m_windows.erase(m_windows.begin() + i);
             }

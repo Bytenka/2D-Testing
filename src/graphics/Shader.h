@@ -17,6 +17,8 @@ public:
   Shader(const std::string &vertPath, const std::string &fragPath);
   ~Shader();
 
+  inline void destroy() noexcept { deleteProgram(m_shaderProgram); m_shaderProgram = 0; } // @TODO Remove -> used to force deletion of shader -> remove when RenderEngine class is ready
+
   inline void enable() const { glCheck(glUseProgram(m_shaderProgram)); }
   inline void disable() const { glCheck(glUseProgram(0)); }
   void reload(); // Shader need to be re-enabled after calling this function
@@ -34,6 +36,7 @@ private:
   GLuint createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) const;
   inline void deleteShader(GLuint shaderID) const noexcept { glCheck(glDeleteShader(shaderID)); }
   inline void deleteProgram(GLuint programID) const noexcept { glCheck(glDeleteProgram(m_shaderProgram)); }
+
 
   GLint getUniformLocation(const std::string &uniformName);
 

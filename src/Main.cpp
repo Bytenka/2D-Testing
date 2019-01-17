@@ -17,9 +17,12 @@ int main(int argc, char *argv[])
         tk::WindowUID mainWindow = app.createWindow(1280, 720, "TESTLIAS");
 
         tk::Window *w = app.getInternalWindow(mainWindow);
+		w->bindContext();
+
         w->setIcon("res/icon.png");
         w->useMouseAsInput(false);
-        w->setClearColor(0, 0, 0);
+
+		w->unbindContext();
 
         tk::Vector4f oui({5.0f, 6.0f, 5.1f, 47.6f});
         tk::Vector4f oui2({5.0f, 6.0f, 5.1f, 47.6f});

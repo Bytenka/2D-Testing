@@ -18,6 +18,8 @@ Shader::Shader(const std::string &vertPath, const std::string &fragPath)
 
 Shader::~Shader()
 {
+	// @TODO remove this check while removing destroy() function
+	if (m_shaderProgram != 0)
     deleteProgram(m_shaderProgram);
 }
 

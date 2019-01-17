@@ -3,6 +3,7 @@
 
 #include <iomanip> // Conversion of the error code to hex
 #include <string>
+#include <sstream>
 
 namespace tk
 {
