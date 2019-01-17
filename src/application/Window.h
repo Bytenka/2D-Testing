@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#include <maths/Maths.h>
 #include <graphics/GLCheck.h>
 
 #include <string>
@@ -28,8 +28,8 @@ public:
   inline unsigned getWidth() const noexcept { return m_width; }
   inline unsigned getHeight() const noexcept { return m_height; }
   inline const std::string &getTitle() const noexcept { return m_title; }
-  inline glm::dvec2 getCursorTravel() const noexcept { return m_mouseIsInput ? m_cursorPos : glm::dvec2(0); }
-  inline glm::dvec2 getCursorPosition() const noexcept { return m_mouseIsInput ? glm::dvec2(0) : m_cursorPos; }
+  inline Vector2d getCursorTravel() const noexcept { return m_mouseIsInput ? m_cursorPos : Vector2d(0); }
+  inline Vector2d getCursorPosition() const noexcept { return m_mouseIsInput ? Vector2d(0) : m_cursorPos; }
   inline GLFWwindow *getGLFWwindow() const noexcept { return m_glfwWindow; }
   inline bool shouldClose() const noexcept { return glfwWindowShouldClose(m_glfwWindow); }
 
@@ -37,7 +37,7 @@ private:
   std::string m_title;
   unsigned m_width;
   unsigned m_height;
-  glm::dvec2 m_cursorPos;
+  Vector2d m_cursorPos;
 
   GLFWwindow *m_glfwWindow = NULL;
   bool m_mouseIsInput;

@@ -21,7 +21,7 @@ includedirs {
     "src", -- Needed for precompiled headers
     "vendor/spdlog/include", -- git submodule add https://github.com/gabime/spdlog.git
     "vendor/glm", -- git submodule add -b stable https://github.com/g-truc/glm.git
-    "../../../../../Dropbox/OpenGL/Libraries/Includes"
+    "../../../../Dropbox/OpenGL/Libraries/Includes"
 }
 
 filter {"configurations:Debug"}

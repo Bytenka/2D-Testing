@@ -7,7 +7,7 @@
 namespace tk
 {
 Window::Window(unsigned width, unsigned height, const std::string &title)
-    : m_title(title), m_width(width), m_height(height), m_cursorPos({width / 2, height / 2})
+    : m_title(title), m_width(width), m_height(height), m_cursorPos({width / 2.0, height / 2.0})
 {
     // Window hints
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

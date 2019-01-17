@@ -55,6 +55,7 @@
         "__nullptr": "cpp",
         "algorithm": "cpp",
         "glad.h": "c",
-        "strstream": "cpp"
+        "strstream": "cpp",
+        "*.ipp": "cpp"
     }
 }

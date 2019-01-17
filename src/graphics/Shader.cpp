@@ -6,8 +6,6 @@
 #include <system/Log.h>
 #include <system/utils.h>
 
-#include <glm/gtc/type_ptr.hpp>
-
 namespace tk
 {
 
@@ -67,10 +65,10 @@ void Shader::setUniform4f(const std::string &uniformName, float x, float y, floa
     glCheck(glUniform4f(getUniformLocation(uniformName), x, y, z, w));
 }
 
-void Shader::setUniformMatrix4fv(const std::string &uniformName, const glm::mat4 &transform)
+void Shader::setUniformMatrix4fv(const std::string &uniformName, const Matrix4f &transform)
 {
     enable();
-    glCheck(glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(transform)));
+    glCheck(glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, maths::matrix::value_ptr(transform)));
 }
 
 // private:

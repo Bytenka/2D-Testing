@@ -22,11 +22,9 @@
 #include <unordered_map>
 
 // Custom
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 //#include "world/Block.h"
 //#include "world/Constants.h"
 
 #include <system/exception/Exception.h>
+#include <maths/Maths.h>

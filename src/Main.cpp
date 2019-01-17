@@ -5,6 +5,8 @@
 #include <application/Application.h>
 #include <application/Window.h>
 
+#include <maths/Maths.h>
+
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -18,6 +20,11 @@ int main(int argc, char *argv[])
         w->setIcon("res/icon.png");
         w->useMouseAsInput(false);
         w->setClearColor(0, 0, 0);
+
+        tk::Vector4f oui({5.0f, 6.0f, 5.1f, 47.6f});
+        tk::Vector4f oui2({5.0f, 6.0f, 5.1f, 47.6f});
+
+        LOG_INFO(oui + oui2);
 
         app.runLoop();
     }

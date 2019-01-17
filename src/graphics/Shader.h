@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glad/glad.h>
-#include <glm/glm.hpp>
 
+#include <maths/Maths.h>
 #include "GLCheck.h"
 
 #include <string>
@@ -26,7 +26,7 @@ public:
   void setUniform2f(const std::string &uniformName, float x, float y);
   void setUniform3f(const std::string &uniformName, float x, float y, float z);
   void setUniform4f(const std::string &uniformName, float x, float y, float z, float w);
-  void setUniformMatrix4fv(const std::string &uniformName, const glm::mat4 &transform);
+  void setUniformMatrix4fv(const std::string &uniformName, const Matrix4f &transform);
 
 private:
   GLuint build(const std::string &vertPath, const std::string &fragPath) const;
