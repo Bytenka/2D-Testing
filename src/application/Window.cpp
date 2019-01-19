@@ -3,6 +3,7 @@
 
 #include <system/exception/Exception.h>
 #include <system/Log.h>
+#include <graphics/GLCheck.h>
 #include <graphics/Image.h>
 
 namespace tk {

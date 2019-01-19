@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #include "Shader.h"
 
 #include <system/Log.h>

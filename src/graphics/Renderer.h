@@ -4,7 +4,6 @@
 #include "Shader.h"
 
 namespace tk {
-
 class Window;
 
 class Renderer

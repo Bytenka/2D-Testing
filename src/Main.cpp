@@ -2,10 +2,7 @@
 
 #include <application/Application.h>
 #include <application/Window.h>
-#include <system/Log.h>
 #include <system/exception/Exception.h>
-
-#include <maths/Maths.h>
 
 #include <iostream>
 

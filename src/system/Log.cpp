@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Log.h"
 
-#include <Main.h>
 #include "exception/Exception.h"
+
+#include <Main.h>
 
 #include <iostream>
 #include <cstdlib>

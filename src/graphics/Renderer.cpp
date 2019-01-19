@@ -3,8 +3,9 @@
 
 #include "GLCheck.h"
 
-#include <application/Window.h>
 #include <glad/glad.h>
+
+#include <application/Window.h>
 #include <system/Log.h>
 
 namespace tk {
@@ -34,9 +35,6 @@ void Renderer::init()
     m_mainShader.enable();
 
     Matrix4f model(1.0f);  // Should translate, rotate and scale using drawable properties
-    model = maths::matrix::translate(model, {(float)m_attachedWindow->getWidth() / 2.0f, (float)m_attachedWindow->getHeight() / 2.0f, 0.0f});
-    model = maths::matrix::rotate(model, maths::toRadians(10.0f), Vector3f(0.0f, 0.0f, 1.0f));
-    model = maths::matrix::scale(model, {100.0f, 100.0f, 0.0f});
 
     Matrix4f view(1.0f);
 
@@ -84,6 +82,15 @@ void Renderer::dispose()
 void Renderer::drawNewFrame()
 {
     m_mainShader.enable();
+
+    Matrix4f model(1.0f);
+    model = maths::matrix::translate(model, {(float)m_attachedWindow->getWidth() / 2.0f, (float)m_attachedWindow->getHeight() / 2.0f, 0.0f});  // Place the object in the world
+    model = maths::matrix::rotate(model, (float)glfwGetTime(), Vector3f(0.0f, 0.0f, 1.0f));  // Rotate the object around the "model origin"
+    model = maths::matrix::translate(model, {50.0f, 50.0f, 0.0f});  // Move the object to be fake a rotation center
+
+    model = maths::matrix::scale(model, {100.0f, 100.0f, 0.0f});
+
+    m_mainShader.setUniformMatrix4fv("modelMat", model);
 
     glCheck(glBindVertexArray(vao));
     glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));

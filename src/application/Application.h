@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Window.h"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -13,6 +11,8 @@
 #define WINDOW_NULL 0
 
 namespace tk {
+class Window;
+
 typedef unsigned long long WindowUID;
 
 class Application

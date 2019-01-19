@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "GLCheck.h"
-#include <system/exception/OpenGLException.h>
 
 #include <glad/glad.h>
+
+#include <system/exception/OpenGLException.h>
 
 #include <string>
 

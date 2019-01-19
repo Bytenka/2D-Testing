@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "Application.h"
 
+#include "Window.h"
+
 #include <system/Log.h>
 #include <system/exception/Exception.h>
 #include <system/exception/GLFWException.h>
-#include <graphics/Shader.h>
 
 #include <iostream>
 #include <algorithm>

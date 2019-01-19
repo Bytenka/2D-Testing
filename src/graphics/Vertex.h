@@ -1,8 +1,10 @@
 #pragma once
 #include <maths/Maths.h>
+
 #include "Color.h"
 
 namespace tk {
+
 struct Vertex
 {
   public:

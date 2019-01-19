@@ -2,13 +2,14 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <maths/Maths.h>
-#include <graphics/GLCheck.h>
+
 #include <graphics/Renderer.h>
+#include <maths/Maths.h>
 
 #include <string>
 
 namespace tk {
+
 class Window
 {
   public:
