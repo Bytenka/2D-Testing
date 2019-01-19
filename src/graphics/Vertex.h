@@ -10,12 +10,12 @@ struct Vertex
   public:
     Vertex();
     Vertex(const Vector3f& position);
-    Vertex(const Vector3f& position, const Vector2f& textureCoords);
+    Vertex(const Vector3f& position, const Vector2f& texture);
     Vertex(const Vector3f& position, const Color& color);
-    Vertex(const Vector3f& position, const Color& color, const Vector2f& textureCoords);
+    Vertex(const Vector3f& position, const Color& color, const Vector2f& texture);
 
     Vector3f position;
     Color color;
-    Vector2f textureCoords;
+    Vector2f texture;
 };
 }  // namespace tk

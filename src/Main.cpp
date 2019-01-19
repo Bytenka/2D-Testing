@@ -6,6 +6,12 @@
 
 #include <iostream>
 
+#include <graphics/Mesh.h>
+
+#include <system/Log.h>
+
+#include <graphics/Vertex.h>
+
 int main(int argc, char* argv[])
 {
     try {
@@ -16,6 +22,12 @@ int main(int argc, char* argv[])
 
         w->setIcon("res/icon.png");
         w->useMouseAsInput(false);
+
+        tk::Mesh m;
+        m.addVertex({{100.0f, 100.0f, 100.0f}});
+
+		for (auto& a : m.getData())
+            std::cout << a << ", ";
 
         app.runLoop();
     } catch (tk::Exception& e) {

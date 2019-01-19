@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <graphics/Renderer.h>
+#include <graphics/Color.h>
 #include <maths/Maths.h>
 
 #include <string>
@@ -17,7 +18,7 @@ class Window
     ~Window();
 
     void update() noexcept;
-    void setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) const noexcept;
+    void setClearColor(const Color& color) const noexcept;
     void setIcon(const std::string& imgPath) noexcept;
     void updateSize(int width, int height) noexcept;
     void useMouseAsInput(bool value) noexcept;

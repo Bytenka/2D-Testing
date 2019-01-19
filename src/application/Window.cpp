@@ -46,7 +46,7 @@ Window::Window(unsigned width, unsigned height, const std::string& title)
 
     glfwMakeContextCurrent(NULL);  // Calls after this should bind and unbind the context
 
-    setClearColor(0, 127, 127);
+    setClearColor({0, 127, 127});
     useMouseAsInput(true);
 
     LOG_INFO("Created new window \"{}\" ({}, {})", m_title, m_width, m_height);
@@ -80,16 +80,13 @@ void Window::update() noexcept
     unbindContext();
 }
 
-void Window::setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) const noexcept
+void Window::setClearColor(const Color& color) const noexcept
 {
     bindContext();
 
     try {
-        glCheck(glClearColor(
-            red / 255.0f,
-            green / 255.0f,
-            blue / 255.0f,
-            alpha / 255.0f));
+        auto c = color.normalized();
+        glCheck(glClearColor(c.x, c.y, c.z, c.w));
     } catch (Exception& e) {
         LOG_ERROR("Unable to set clear color: {}", e.what());
     }
