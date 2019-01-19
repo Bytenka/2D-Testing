@@ -8,20 +8,19 @@
 #include <system/Log.h>
 #include <system/exception/Exception.h>
 
-namespace tk
-{
-Image::Image(const std::string &imgPath)
+namespace tk {
+
+Image::Image(const std::string& imgPath)
     : m_imgPath(imgPath)
 {
     //stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(m_imgPath.c_str(), &m_width, &m_height, &m_nbChannels, 0);
+    unsigned char* data = stbi_load(m_imgPath.c_str(), &m_width, &m_height, &m_nbChannels, 0);
 
     if (data == NULL)
         throw Exception("Unable to load file \"" + imgPath + "\"!\n\tReason: " + stbi_failure_reason());
 
     // Discard previous data if existing
-    if (m_data != NULL)
-    {
+    if (m_data != NULL) {
         LOG_INFO("Reloading file \"{}\"", m_imgPath);
         stbi_image_free(m_data);
     }
@@ -38,4 +37,4 @@ Image::~Image()
 //public:
 
 //private::
-} // namespace tk
+}  // namespace tk

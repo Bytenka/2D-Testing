@@ -6,12 +6,11 @@
 
 #include <string>
 
-namespace tk
-{
+namespace tk {
 static std::string errorName;
 static std::string msg;
 
-void checkOpenGLError(const char *expr, const char *file_name, unsigned line)
+void checkOpenGLError(const char* expr, const char* file_name, unsigned line)
 {
     GLenum err;
 
@@ -22,46 +21,38 @@ void checkOpenGLError(const char *expr, const char *file_name, unsigned line)
         msg.clear();
 
     bool gotAnError = false;
-    while ((err = glGetError()) != GL_NO_ERROR)
-    {
-        if (gotAnError)
-        {
+    while ((err = glGetError()) != GL_NO_ERROR) {
+        if (gotAnError) {
             errorName += ", ";
             msg += " ";
         }
 
-        switch (err)
-        {
-        case GL_INVALID_ENUM:
-        {
+        switch (err) {
+        case GL_INVALID_ENUM: {
             errorName += "GL_INVALID_ENUM";
             msg += "An unacceptable value is specified for an enumerated argument.";
             break;
         }
 
-        case GL_INVALID_VALUE:
-        {
+        case GL_INVALID_VALUE: {
             errorName += "GL_INVALID_VALUE";
             msg += "A numeric argument is out of range.";
             break;
         }
 
-        case GL_INVALID_OPERATION:
-        {
+        case GL_INVALID_OPERATION: {
             errorName += "GL_INVALID_OPERATION";
             msg += "The specified operation is not allowed in the current state.";
             break;
         }
 
-        case GL_INVALID_FRAMEBUFFER_OPERATION:
-        {
+        case GL_INVALID_FRAMEBUFFER_OPERATION: {
             errorName += "GL_INVALID_FRAMEBUFFER_OPERATION";
             msg += "The framebuffer object is not complete.";
             break;
         }
 
-        case GL_OUT_OF_MEMORY:
-        {
+        case GL_OUT_OF_MEMORY: {
             errorName += "GL_OUT_OF_MEMORY";
             msg += "There is not enough memory left to execute the command.";
             break;
@@ -79,4 +70,4 @@ void checkOpenGLError(const char *expr, const char *file_name, unsigned line)
     if (gotAnError)
         throw OpenGLException(file_name, line, errorName.c_str(), msg.c_str());
 }
-} // namespace tk
+}  // namespace tk

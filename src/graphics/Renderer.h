@@ -1,30 +1,30 @@
 #pragma once
 
-#include "Shader.h"
 #include "Camera.h"
+#include "Shader.h"
 
-namespace tk
-{
+namespace tk {
+
 class Window;
 
 class Renderer
 {
-public:
-	Renderer(const Window *attachedWindow);
-	~Renderer();
+  public:
+    Renderer(const Window* attachedWindow);
+    ~Renderer();
 
-	void init();
-	void dispose();
+    void init();
+    void dispose();
 
-	void drawNewFrame();
+    void drawNewFrame();
 
-private:
-private:
-	const Window *m_attachedWindow;
+  private:
+  private:
+    const Window* m_attachedWindow;
 
-	Shader m_mainShader;
-	Camera m_mainCamera;
-	bool m_initialized = false;
+    Shader m_mainShader;
+    Camera m_mainCamera;
+    bool m_initialized = false;
 };
 
-} // namespace tk
+}  // namespace tk

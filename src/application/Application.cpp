@@ -4,14 +4,13 @@
 #include <system/Log.h>
 #include <system/exception/Exception.h>
 #include <system/exception/GLFWException.h>
+#include <graphics/Shader.h>
 
 #include <iostream>
 #include <algorithm>
 
-#include <graphics/Shader.h>
 
-namespace tk
-{
+namespace tk {
 Application::Application()
 {
     // Initialize logging system
@@ -29,7 +28,7 @@ Application::Application()
 Application::~Application()
 {
     LOG_INFO("Application terminating");
-    m_windows.clear(); // Clears everything before calling glfwTerminate();
+    m_windows.clear();  // Clears everything before calling glfwTerminate();
     glfwTerminate();
 }
 
@@ -37,19 +36,16 @@ Application::~Application()
 
 void Application::runLoop()
 {
-    while (!m_shouldTerminate)
-    {
-        for (int i = m_windows.size() - 1; i >= 0; i--)
-        {
-            auto &currentPair = m_windows[i];
-            auto &currentWindow = currentPair.second;
+    while (!m_shouldTerminate) {
+        for (int i = m_windows.size() - 1; i >= 0; i--) {
+            auto& currentPair = m_windows[i];
+            auto& currentWindow = currentPair.second;
 
             currentWindow->update();
             currentWindow->clear();
             currentWindow->display();
 
-            if (currentWindow->shouldClose())
-            {
+            if (currentWindow->shouldClose()) {
                 if (currentPair.first == m_mainWindowUID)
                     m_shouldTerminate = true;
 
@@ -61,10 +57,9 @@ void Application::runLoop()
     }
 }
 
-WindowUID Application::createWindow(unsigned width, unsigned height, const std::string &title) noexcept
+WindowUID Application::createWindow(unsigned width, unsigned height, const std::string& title) noexcept
 {
-    try
-    {
+    try {
         auto newWindowPtr(std::make_unique<Window>(width, height, title));
 
         WindowUID uid = m_windowUIDCounter++;
@@ -72,9 +67,7 @@ WindowUID Application::createWindow(unsigned width, unsigned height, const std::
         m_windows.push_back(std::move(newPair));
 
         return uid;
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Cannot create new Window \"{}\": {}", title, e.what());
         return WINDOW_NULL;
     }
@@ -82,37 +75,28 @@ WindowUID Application::createWindow(unsigned width, unsigned height, const std::
 
 void Application::destroyWindow(WindowUID uid) noexcept
 {
-    try
-    {
+    try {
         if (uid == WINDOW_NULL)
             throw Exception("Window is null");
 
-        if (uid == m_mainWindowUID)
-        {
+        if (uid == m_mainWindowUID) {
             LOG_TRACE("Destroying main window -> destroying all windows");
             m_windows.clear();
             m_mainWindowUID = WINDOW_NULL;
             m_windowUIDCounter = 1;
-        }
-        else
-        {
+        } else {
             m_windows.erase(getWindowFromUID(uid));
         }
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Cannot destroy window with UID \"{}\": {}", uid, e.what());
     }
 }
 
-Window *Application::getInternalWindow(WindowUID uid) noexcept
+Window* Application::getInternalWindow(WindowUID uid) noexcept
 {
-    try
-    {
+    try {
         return getWindowFromUID(uid)->second.get();
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Unable to find window with UID \"{}\": ", uid, e.what());
         return nullptr;
     }
@@ -125,7 +109,7 @@ std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application
     auto it = std::find_if(
         m_windows.begin(),
         m_windows.end(),
-        [&](const std::pair<WindowUID, std::unique_ptr<Window>> &current) {
+        [&](const std::pair<WindowUID, std::unique_ptr<Window>>& current) {
             return current.first == uid;
         });
 
@@ -135,12 +119,12 @@ std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application
     return it;
 }
 
-std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application::getWindowFromGLFWwindow(GLFWwindow *window)
+std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application::getWindowFromGLFWwindow(GLFWwindow* window)
 {
     auto it = std::find_if(
         m_windows.begin(),
         m_windows.end(),
-        [&](const std::pair<WindowUID, std::unique_ptr<Window>> &current) {
+        [&](const std::pair<WindowUID, std::unique_ptr<Window>>& current) {
             return (current.second->getGLFWwindow()) == window;
         });
 
@@ -152,8 +136,8 @@ std::vector<std::pair<WindowUID, std::unique_ptr<Window>>>::iterator Application
 
 // callbacks:
 
-void Application::glfw_error_callback(int error_code, const char *description)
+void Application::glfw_error_callback(int error_code, const char* description)
 {
     throw GLFWException(description, error_code);
 }
-} // namespace tk
+}  // namespace tk

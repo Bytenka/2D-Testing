@@ -5,9 +5,8 @@
 #include <system/Log.h>
 #include <graphics/Image.h>
 
-namespace tk
-{
-Window::Window(unsigned width, unsigned height, const std::string &title)
+namespace tk {
+Window::Window(unsigned width, unsigned height, const std::string& title)
     : m_renderer(this), m_title(title), m_width(width), m_height(height), m_cursorPos({width / 2.0, height / 2.0})
 {
     // Window hints
@@ -15,7 +14,7 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *newWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    GLFWwindow* newWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (newWindow == NULL)
         throw Exception("Unable to create window");
 
@@ -26,7 +25,7 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
 
     glfwSwapInterval(1);
 
-    glfwSetWindowUserPointer(newWindow, this); // Used to get back Window object in callbacks
+    glfwSetWindowUserPointer(newWindow, this);  // Used to get back Window object in callbacks
     glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
     // @TODO glfwSetWindowFocusCallback()
 
@@ -44,7 +43,7 @@ Window::Window(unsigned width, unsigned height, const std::string &title)
     m_glfwWindow = newWindow;
     m_renderer.init();
 
-    glfwMakeContextCurrent(NULL); // Calls after this should bind and unbind the context
+    glfwMakeContextCurrent(NULL);  // Calls after this should bind and unbind the context
 
     setClearColor(0, 127, 127);
     useMouseAsInput(true);
@@ -75,7 +74,7 @@ void Window::update() noexcept
     // and the real (relative) position of the cursor otherwise
     glfwGetCursorPos(m_glfwWindow, &m_cursorPos.x, &m_cursorPos.y);
     if (m_mouseIsInput)
-        glfwSetCursorPos(m_glfwWindow, 0, 0); // Because GLFW doesn't do it automatically
+        glfwSetCursorPos(m_glfwWindow, 0, 0);  // Because GLFW doesn't do it automatically
 
     unbindContext();
 }
@@ -84,26 +83,22 @@ void Window::setClearColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alp
 {
     bindContext();
 
-    try
-    {
+    try {
         glCheck(glClearColor(
             red / 255.0f,
             green / 255.0f,
             blue / 255.0f,
             alpha / 255.0f));
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Unable to set clear color: {}", e.what());
     }
 
     unbindContext();
 }
 
-void Window::setIcon(const std::string &imgPath) noexcept
+void Window::setIcon(const std::string& imgPath) noexcept
 {
-    try
-    {
+    try {
         Image img(imgPath);
 
         GLFWimage glfwImage;
@@ -112,9 +107,7 @@ void Window::setIcon(const std::string &imgPath) noexcept
         glfwImage.pixels = img.getData();
 
         glfwSetWindowIcon(m_glfwWindow, 1, &glfwImage);
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Unable to set icon for window \"{}\": {}", m_title, e.what());
     }
 }
@@ -126,12 +119,9 @@ void Window::updateSize(int width, int height) noexcept
     m_width = width;
     m_height = height;
 
-    try
-    {
+    try {
         glCheck(glViewport(0, 0, width, height));
-    }
-    catch (Exception &e)
-    {
+    } catch (Exception& e) {
         LOG_ERROR("Could not resize window correctly: {}", e.what());
     }
 
@@ -169,9 +159,9 @@ void Window::clear() const
 }
 
 // callbacks:
-void Window::framebuffer_size_callback(GLFWwindow *window, int width, int height) noexcept
+void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height) noexcept
 {
     if (width != 0 && height != 0)
-        ((Window *)glfwGetWindowUserPointer(window))->updateSize(width, height);
+        ((Window*)glfwGetWindowUserPointer(window))->updateSize(width, height);
 }
-} // namespace tk
+}  // namespace tk

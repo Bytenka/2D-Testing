@@ -1,13 +1,13 @@
 #include "pch.h"
+
 #include "Shader.h"
 
+#include <system/Log.h>
 #include <system/exception/Exception.h>
 #include <system/exception/InvalidArgumentException.h>
-#include <system/Log.h>
 #include <system/utils.h>
 
-namespace tk
-{
+namespace tk {
 
 Shader::Shader()
 {
@@ -21,7 +21,7 @@ Shader::~Shader()
 
 // public:
 
-void Shader::load(const std::string &vertPath, const std::string &fragPath)
+void Shader::load(const std::string& vertPath, const std::string& fragPath)
 {
     if (m_loaded)
         dispose();
@@ -48,7 +48,7 @@ void Shader::reload()
 {
     GLuint tempSha = build(m_vertPath, m_fragPath);
 
-    disable(); // Just to force the user to re-enable the shader
+    disable();  // Just to force the user to re-enable the shader
     deleteProgram(m_shaderProgram);
     m_uniformCache.clear();
     m_shaderProgram = tempSha;
@@ -56,37 +56,37 @@ void Shader::reload()
     LOG_DEBUG("Reloaded shader \"{}, {}\"...", m_vertPath, m_fragPath);
 }
 
-void Shader::setUniform1i(const std::string &uniformName, int i)
+void Shader::setUniform1i(const std::string& uniformName, int i)
 {
     enable();
     glCheck(glUniform1i(getUniformLocation(uniformName), i));
 }
 
-void Shader::setUniform1f(const std::string &uniformName, float f)
+void Shader::setUniform1f(const std::string& uniformName, float f)
 {
     enable();
     glCheck(glUniform1f(getUniformLocation(uniformName), f));
 }
 
-void Shader::setUniform2f(const std::string &uniformName, float x, float y)
+void Shader::setUniform2f(const std::string& uniformName, float x, float y)
 {
     enable();
     glCheck(glUniform2f(getUniformLocation(uniformName), x, y));
 }
 
-void Shader::setUniform3f(const std::string &uniformName, float x, float y, float z)
+void Shader::setUniform3f(const std::string& uniformName, float x, float y, float z)
 {
     enable();
     glCheck(glUniform3f(getUniformLocation(uniformName), x, y, z));
 }
 
-void Shader::setUniform4f(const std::string &uniformName, float x, float y, float z, float w)
+void Shader::setUniform4f(const std::string& uniformName, float x, float y, float z, float w)
 {
     enable();
     glCheck(glUniform4f(getUniformLocation(uniformName), x, y, z, w));
 }
 
-void Shader::setUniformMatrix4fv(const std::string &uniformName, const Matrix4f &transform)
+void Shader::setUniformMatrix4fv(const std::string& uniformName, const Matrix4f& transform)
 {
     enable();
     glCheck(glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, maths::matrix::value_ptr(transform)));
@@ -94,7 +94,7 @@ void Shader::setUniformMatrix4fv(const std::string &uniformName, const Matrix4f 
 
 // private:
 
-GLuint Shader::build(const std::string &vertPath, const std::string &fragPath) const
+GLuint Shader::build(const std::string& vertPath, const std::string& fragPath) const
 {
     GLuint vertSha = createShader(vertPath, GL_VERTEX_SHADER);
     GLuint fragSha = createShader(fragPath, GL_FRAGMENT_SHADER);
@@ -107,16 +107,16 @@ GLuint Shader::build(const std::string &vertPath, const std::string &fragPath) c
     return sha;
 }
 
-GLuint Shader::createShader(const std::string &filePath, GLenum shaderType) const
+GLuint Shader::createShader(const std::string& filePath, GLenum shaderType) const
 {
     if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER)
         throw InvalidArgumentException("Shader type invalid or unsupported");
 
     std::string shaSourceStr(read_file(filePath.c_str()));
-    const char *shaSource = shaSourceStr.c_str();
+    const char* shaSource = shaSourceStr.c_str();
 
     GLuint sha;
-    glCheck(sha = glCreateShader(shaderType)); // Errors will be caught below
+    glCheck(sha = glCreateShader(shaderType));  // Errors will be caught below
     if (sha == 0)
         throw Exception("OpenGL call to create shader failed. Is context valid?");
 
@@ -125,9 +125,8 @@ GLuint Shader::createShader(const std::string &filePath, GLenum shaderType) cons
 
     // Error checking
     int success;
-    glCheck(glGetShaderiv(sha, GL_COMPILE_STATUS, &success)); // Errors will be caught below
-    if (!success)
-    {
+    glCheck(glGetShaderiv(sha, GL_COMPILE_STATUS, &success));  // Errors will be caught below
+    if (!success) {
         char infoLog[512];
         glCheck(glGetShaderInfoLog(sha, 512, NULL, infoLog));
         throw Exception("Compilation error: " + std::string(infoLog));
@@ -150,26 +149,25 @@ GLuint Shader::createProgram(GLuint vertexShaderID, GLuint fragmentShaderID) con
     // Error checking
     int success;
     glCheck(glGetProgramiv(prog, GL_LINK_STATUS, &success));
-    if (!success)
-    {
+    if (!success) {
         char infoLog[512];
         glCheck(glGetProgramInfoLog(prog, 512, NULL, infoLog));
         throw Exception("Linking error: " + std::string(infoLog));
     }
 
-    // Detach so they can actually be deleted after that
+    // Detach so they can be effectively deleted after that (cf doc)
     glCheck(glDetachShader(prog, vertexShaderID));
     glCheck(glDetachShader(prog, fragmentShaderID));
 
     return prog;
 }
 
-GLint Shader::getUniformLocation(const std::string &uniformName)
+GLint Shader::getUniformLocation(const std::string& uniformName)
 {
     auto it = std::find_if(
         m_uniformCache.begin(),
         m_uniformCache.end(),
-        [&](const std::pair<std::string, GLuint> &current) {
+        [&](const std::pair<std::string, GLuint>& current) {
             return (current.first) == uniformName;
         });
 
@@ -188,4 +186,4 @@ GLint Shader::getUniformLocation(const std::string &uniformName)
     return newValue;
 }
 
-} // namespace tk
+}  // namespace tk

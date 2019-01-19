@@ -7,8 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 
-namespace tk
-{
+namespace tk {
 std::shared_ptr<spdlog::logger> Log::s_mainLogger;
 bool Log::s_isInitialized = false;
 
@@ -17,10 +16,8 @@ void Log::init()
     if (s_isInitialized)
         LOG_WARN("Log::init() called, but logger is already initialized");
 
-    else
-    {
-        try
-        {
+    else {
+        try {
             s_mainLogger = spdlog::stdout_color_mt("console");
 
 #ifdef TK_DEBUG
@@ -32,12 +29,10 @@ void Log::init()
 
             s_mainLogger->trace("Initialized logger");
             s_isInitialized = true;
-        }
-        catch (const spdlog::spdlog_ex &ex)
-        {
+        } catch (const spdlog::spdlog_ex& ex) {
             std::string msg = "Log init failed: " + std::string(ex.what());
             throw Exception(msg);
         }
     }
 }
-} // namespace tk
+}  // namespace tk

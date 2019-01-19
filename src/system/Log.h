@@ -6,21 +6,20 @@
 
 #include <memory>
 
-namespace tk
-{
+namespace tk {
 class Log
 {
-public:
-  static void init();
-  inline static std::shared_ptr<spdlog::logger> &getLogger() { return s_mainLogger; }
+  public:
+    static void init();
+    inline static std::shared_ptr<spdlog::logger>& getLogger() { return s_mainLogger; }
 
-private:
-  static std::shared_ptr<spdlog::logger> s_mainLogger;
-  static bool s_isInitialized;
-  Log() {}
-  ~Log() {}
+  private:
+    static std::shared_ptr<spdlog::logger> s_mainLogger;
+    static bool s_isInitialized;
+    Log() {}
+    ~Log() {}
 };
-} // namespace tk
+}  // namespace tk
 
 #define LOG_TRACE(...) tk::Log::getLogger()->trace(__VA_ARGS__)
 #define LOG_DEBUG(...) tk::Log::getLogger()->debug(__VA_ARGS__)
