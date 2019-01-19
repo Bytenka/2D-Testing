@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shader.h"
+#include "Camera.h"
 
 namespace tk
 {
@@ -8,20 +9,21 @@ class Window;
 
 class Renderer
 {
-  public:
+public:
 	Renderer(const Window *attachedWindow);
 	~Renderer();
 
 	void init();
 	void dispose();
 
-	void drawNewFrame() const;
+	void drawNewFrame();
 
-  private:
-  private:
+private:
+private:
 	const Window *m_attachedWindow;
 
 	Shader m_mainShader;
+	Camera m_mainCamera;
 	bool m_initialized = false;
 };
 

@@ -149,7 +149,7 @@ void Window::useMouseAsInput(bool value) noexcept
     m_mouseIsInput = value;
 }
 
-void Window::display() const
+void Window::display()
 {
     bindContext();
 

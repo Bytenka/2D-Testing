@@ -21,7 +21,7 @@ public:
   void setIcon(const std::string &imgPath) noexcept;
   void updateSize(int width, int height) noexcept;
   void useMouseAsInput(bool value) noexcept;
-  void display() const;
+  void display();
 
   void clear() const;
   inline unsigned getWidth() const noexcept { return m_width; }

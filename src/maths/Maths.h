@@ -93,8 +93,12 @@ inline Vector3d cross(const Vector3d &x, const Vector3d &y) noexcept
 
 namespace matrix
 {
-inline const float *value_ptr(const Matrix2f &mat) noexcept { return glm::value_ptr(mat); }
+inline const float *value_ptr(const Matrix4f &mat) noexcept { return glm::value_ptr(mat); }
 inline Matrix4f lookAt(const Vector3d &eye, const Vector3d &center, const Vector3d &up) noexcept { return glm::lookAt(glm::vec3(eye.x, eye.y, eye.z), glm::vec3(center.x, center.y, center.z), glm::vec3(up.x, up.y, up.z)); }
+inline Matrix4f ortho(float left, float right, float bottom, float top) noexcept { return glm::ortho(left, right, bottom, top); }
+inline Matrix4f translate(const Matrix4f &m, const Vector3f &v) noexcept { return glm::translate(m, {v.x, v.y, v.z}); }
+inline Matrix4f scale(const Matrix4f &m, const Vector3f &v) noexcept { return glm::scale(m, {v.x, v.y, v.z}); }
+inline Matrix4f rotate(const Matrix4f &m, float angleRad, const Vector3f &v) noexcept { return glm::rotate(m, angleRad, {v.x, v.y, v.z}); }
 } // namespace matrix
 } // namespace maths
 } // namespace tk
