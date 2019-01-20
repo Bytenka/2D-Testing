@@ -30,12 +30,12 @@ Window::Window(unsigned width, unsigned height, const std::string& title)
     glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
     // @TODO glfwSetWindowFocusCallback()
 
-    // Setting up OpenGL. Functions are safe to call in that configuration
+    // Setting up OpenGL. Context is bound, these are safe to call
     glCheck(glViewport(0, 0, width, height));
-    glCheck(glEnable(GL_DEPTH_TEST));
-    glCheck(glEnable(GL_CULL_FACE));
     glCheck(glFrontFace(GL_CCW));
     glCheck(glCullFace(GL_BACK));
+    glCheck(glEnable(GL_CULL_FACE));
+    glCheck(glEnable(GL_DEPTH_TEST));
 
     // Transparency
     glCheck(glEnable(GL_BLEND));

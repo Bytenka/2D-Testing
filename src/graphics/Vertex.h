@@ -14,6 +14,7 @@ struct Vertex
     Vertex(const Vector3f& position, const Color& color);
     Vertex(const Vector3f& position, const Color& color, const Vector2f& texture);
 
+  public:
     Vector3f position;
     Color color;
     Vector2f texture;

@@ -18,10 +18,10 @@ class Mesh
     void addVertex(const Vertex& vertex) noexcept;
     inline void clear() noexcept { m_vertices.clear(); }
 
-    inline std::vector<float> getData() const noexcept { return m_vertices; };
+    inline const std::vector<float>& getData() const noexcept { return m_vertices; };
 
-	// These functions will build a new vector containing only the requested data
-	// Copies are made, so calling them is slow
+    // These functions will build a new vector containing only the requested data
+    // Copies are made, so calling them is slow
     std::vector<Vector3f> getVertices() const noexcept;
     std::vector<Color> getColors() const noexcept;
     std::vector<Vector2f> getTextures() const noexcept;

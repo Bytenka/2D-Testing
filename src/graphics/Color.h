@@ -15,6 +15,7 @@ struct Color
     Vector4f normalized() const noexcept { return {red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f}; }
     Vector4<ColorValue> asVector4() const noexcept { return {red, green, blue, alpha}; }
 
+  public:
     ColorValue red;
     ColorValue green;
     ColorValue blue;

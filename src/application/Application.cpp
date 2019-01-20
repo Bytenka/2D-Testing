@@ -37,6 +37,9 @@ Application::~Application()
 
 void Application::runLoop()
 {
+    if (m_windows.empty())
+        LOG_WARN("No window was created before entering {}. Function will return.", __FUNCTION__);
+
     while (!m_shouldTerminate) {
         for (int i = m_windows.size() - 1; i >= 0; i--) {
             auto& currentPair = m_windows[i];
@@ -56,6 +59,8 @@ void Application::runLoop()
         if (m_windows.empty())
             m_shouldTerminate = true;
     }
+
+	// Remaining windows will be deleted in the destructor
 }
 
 WindowUID Application::createWindow(unsigned width, unsigned height, const std::string& title) noexcept
