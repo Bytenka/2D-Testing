@@ -118,7 +118,7 @@ void Window::updateSize(int width, int height) noexcept
     m_height = height;
 
     try {
-        glCheck(glViewport(0, 0, width, height));
+        glCheck(glViewport(0, 0, m_width, m_height));
     } catch (Exception& e) {
         LOG_ERROR("Could not resize window correctly: {}", e.what());
     }

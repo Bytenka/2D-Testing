@@ -87,9 +87,6 @@ void Renderer::init()
 
     auto v = m.getData();
 
-    for (auto& i : v)
-        LOG_TRACE(i);
-
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     glCheck(glBufferData(GL_ARRAY_BUFFER, v.size() * sizeof(float), v.data(), GL_STATIC_DRAW));
 
