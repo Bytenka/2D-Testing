@@ -19,6 +19,7 @@ class Mesh
     inline void clear() noexcept { m_vertices.clear(); }
 
     inline const std::vector<float>& getData() const noexcept { return m_vertices; };
+    inline unsigned getVerticesCount() const noexcept { return (unsigned)(m_vertices.size() / 3); }
 
     // These functions will build a new vector containing only the requested data
     // Copies are made, so calling them is slow

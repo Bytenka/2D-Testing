@@ -22,6 +22,9 @@ GLuint indices[] = {0, 1, 2, 0, 2, 3};
 
 GLuint vao, vbo, ebo;
 
+Mesh mesh;
+
+
 Renderer::Renderer(const Window* attachedWindow)
     : m_attachedWindow(attachedWindow)
 {
@@ -38,7 +41,7 @@ Renderer::~Renderer()
 void Renderer::init()
 {
     m_mainShader.load("res/shaders/default2D.vert", "res/shaders/default2D.frag");
-   // m_mainShader.enable();
+    // m_mainShader.enable();
 
     Matrix4f model(1.0f);  // Should translate, rotate and scale using drawable properties
 
@@ -53,11 +56,17 @@ void Renderer::init()
 
     //m_mainShader.disable();
 
-    Mesh m;
-    m.addVertex({{-1.0f, -1.0f, 0.0f}, Color(0, 255, 0)});
-    m.addVertex({{1.0f, -1.0f, 0.0f}, Color(255, 0, 0)});
-    m.addVertex({{1.0f, 1.0f, 0.0f}, Color(0, 0, 255)});
-    m.addVertex({{-1.0f, 1.0f, 0.0f}, Color(0, 0, 0, 0)});
+    //mesh.addVertex({{-1.0f, -1.0f, 0.0f}, Color(0, 255, 0)});
+    //mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(255, 0, 0)});
+    //mesh.addVertex({{1.0f, 1.0f, 0.0f}, Color(0, 0, 255)});
+    //mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(0, 0, 0, 0)});
+
+    mesh.addVertex({{-1.0f, -1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{1.0f, 1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand()%255)});
 
     /*
     glCheck(glGenVertexArrays(1, &vao));
@@ -85,7 +94,7 @@ void Renderer::init()
 
     glCheck(glBindVertexArray(vao));
 
-    auto v = m.getData();
+    auto v = mesh.getData();
 
     glCheck(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     glCheck(glBufferData(GL_ARRAY_BUFFER, v.size() * sizeof(float), v.data(), GL_STATIC_DRAW));
@@ -142,7 +151,8 @@ void Renderer::drawNewFrame()
     m_mainShader.setUniformMatrix4fv("modelMat", model);
 
     glCheck(glBindVertexArray(vao));
-    glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));
+    //glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));
+    glCheck(glDrawArrays(GL_TRIANGLES, 0, mesh.getVerticesCount()));
     glCheck(glBindVertexArray(0));
 
     m_mainShader.disable();
