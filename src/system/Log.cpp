@@ -12,10 +12,10 @@ namespace tk {
 std::shared_ptr<spdlog::logger> Log::s_mainLogger;
 bool Log::s_isInitialized = false;
 
-void Log::init()
+void Log::init() noexcept
 {
     if (s_isInitialized)
-        LOG_WARN("Log::init() called, but logger is already initialized");
+        LOG_WARN("Log::init() called, but logger is already initialized. Ignoring");
 
     else {
         try {
@@ -31,8 +31,8 @@ void Log::init()
             s_mainLogger->trace("Initialized logger");
             s_isInitialized = true;
         } catch (const spdlog::spdlog_ex& ex) {
-            std::string msg = "Log init failed: " + std::string(ex.what());
-            throw Exception(msg);
+            std::string msg = "FATAL: Log init failed: " + std::string(ex.what());
+            std::terminate();  // Because the program need a working logger to report errors
         }
     }
 }

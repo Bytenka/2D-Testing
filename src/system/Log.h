@@ -10,7 +10,7 @@ namespace tk {
 class Log
 {
   public:
-    static void init();
+    static void init() noexcept;
     inline static std::shared_ptr<spdlog::logger>& getLogger() { return s_mainLogger; }
 
   private:

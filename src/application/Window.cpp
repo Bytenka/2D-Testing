@@ -10,56 +10,67 @@ namespace tk {
 Window::Window(unsigned width, unsigned height, const std::string& title)
     : m_renderer(this), m_title(title), m_width(width), m_height(height), m_cursorPos({width / 2.0, height / 2.0})
 {
-    // Window hints
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    try {
+        // Window hints
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* newWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-    if (newWindow == NULL)
-        throw Exception("Unable to create window");
+        GLFWwindow* newWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        if (newWindow == NULL)
+            throw Exception("Unable to create window");
 
-    glfwMakeContextCurrent(newWindow);
+        glfwMakeContextCurrent(newWindow);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        throw Exception("GLAD loader failed");
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+            throw Exception("GLAD loader failed");
 
-    glfwSwapInterval(1);
+        glfwSwapInterval(1);
 
-    glfwSetWindowUserPointer(newWindow, this);  // Used to get back Window object in callbacks
-    glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
-    // @TODO glfwSetWindowFocusCallback()
+        glfwSetWindowUserPointer(newWindow, this);  // Used to get back Window object in callbacks
+        glfwSetFramebufferSizeCallback(newWindow, framebuffer_size_callback);
+        // @TODO glfwSetWindowFocusCallback()
 
-    // Setting up OpenGL. Context is bound, these are safe to call
-    glCheck(glViewport(0, 0, width, height));
-    glCheck(glFrontFace(GL_CCW));
-    glCheck(glCullFace(GL_BACK));
-    glCheck(glEnable(GL_CULL_FACE));
-    glCheck(glEnable(GL_DEPTH_TEST));
+        // Setting up OpenGL. Context is bound, these are safe to call
+        glCheck(glViewport(0, 0, width, height));
+        glCheck(glFrontFace(GL_CCW));
+        glCheck(glCullFace(GL_BACK));
+        glCheck(glEnable(GL_CULL_FACE));
+        glCheck(glEnable(GL_DEPTH_TEST));
 
-    // Transparency
-    glCheck(glEnable(GL_BLEND));
-    glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        // Transparency
+        glCheck(glEnable(GL_BLEND));
+        glCheck(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    m_glfwWindow = newWindow;
-    m_renderer.init();
+        m_glfwWindow = newWindow;
+        m_renderer.init();
 
-    glfwMakeContextCurrent(NULL);  // Calls after this should bind and unbind the context
+        glfwMakeContextCurrent(NULL);  // Calls after this should bind and unbind the context
 
-    setClearColor({0, 127, 127});
-    useMouseAsInput(true);
+        setClearColor({0, 127, 127});
+        useMouseAsInput(true);
 
-    LOG_INFO("Created new window \"{}\" ({}, {})", m_title, m_width, m_height);
+        LOG_INFO("Created new window \"{}\" ({}, {})", m_title, m_width, m_height);
+
+    } catch (Exception& e) {
+        LOG_ERROR("Unable to create Window: {}", e.what());
+        throw Exception("Failed to create Window \"" + m_title + "\"");
+    }
 }
 
 Window::~Window()
 {
-    bindContext();
-    m_renderer.dispose();
-    unbindContext();
+    try {
+        bindContext();
+        m_renderer.dispose();
+        unbindContext();
 
-    LOG_INFO("Destroying window \"{}\"", m_title);
-    glfwDestroyWindow(m_glfwWindow);
+        LOG_INFO("Destroying window \"{}\"", m_title);
+        glfwDestroyWindow(m_glfwWindow);
+
+    } catch (Exception& e) {
+        LOG_ERROR("While destroying window \"{}\": {}", m_title, e.what());
+    }
 }
 
 // public:
@@ -88,7 +99,7 @@ void Window::setClearColor(const Color& color) const noexcept
         auto c = color.normalized();
         glCheck(glClearColor(c.x, c.y, c.z, c.w));
     } catch (Exception& e) {
-        LOG_ERROR("Unable to set clear color: {}", e.what());
+        LOG_ERROR("Could not set clear color: {}", e.what());
     }
 
     unbindContext();
@@ -106,7 +117,7 @@ void Window::setIcon(const std::string& imgPath) noexcept
 
         glfwSetWindowIcon(m_glfwWindow, 1, &glfwImage);
     } catch (Exception& e) {
-        LOG_ERROR("Unable to set icon for window \"{}\": {}", m_title, e.what());
+        LOG_ERROR("Could not set icon: {}", e.what());
     }
 }
 
@@ -120,7 +131,7 @@ void Window::updateSize(int width, int height) noexcept
     try {
         glCheck(glViewport(0, 0, m_width, m_height));
     } catch (Exception& e) {
-        LOG_ERROR("Could not resize window correctly: {}", e.what());
+        LOG_ERROR("Could not resize window: {}", e.what());
     }
 
     unbindContext();
@@ -141,8 +152,14 @@ void Window::display()
 {
     bindContext();
 
-    m_renderer.drawNewFrame();
-    glfwSwapBuffers(m_glfwWindow);
+    try {
+        m_renderer.drawNewFrame();
+        glfwSwapBuffers(m_glfwWindow);
+
+    } catch (Exception& e) {
+        LOG_ERROR("Could not display frame: {}", e.what());
+        throw Exception("Failed to display frame");
+    }
 
     unbindContext();
 }
@@ -151,7 +168,13 @@ void Window::clear() const
 {
     bindContext();
 
-    glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    try {
+        glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+    } catch (Exception& e) {
+        LOG_ERROR("Could not clear frame: {}", e.what());
+        throw Exception("Failed to clear frame");
+    }
 
     unbindContext();
 }

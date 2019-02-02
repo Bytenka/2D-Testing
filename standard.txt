@@ -1,0 +1,10 @@
+Exception handeling:
+    - Every function should try-catch on tk::Exception at least when calling a potentially throwing function
+    - e.what() should be logged 
+    - If rethrow is needed, a new tk::Exception should be thrown with a more contextualized message
+
+    - Catching in constructors: "Unable to ... CLASS_NAME"
+    - Catching in destructors: "While destroying..."
+    - Catching in functions: "Could not..."
+    - Throwing message: "Failed to..."
+    - Use class names when talking about classes (with case)

@@ -25,10 +25,10 @@ class Application
     }
 
     void runLoop();
-    WindowUID createWindow(unsigned width, unsigned height, const std::string& title) noexcept;
+    WindowUID createWindow(unsigned width, unsigned height, const std::string& title);
     void destroyWindow(WindowUID uid) noexcept;
 
-    Window* getInternalWindow(WindowUID uid) noexcept;
+    Window* getInternalWindow(WindowUID uid);
 
     inline void setMainWindow(WindowUID uid) noexcept { m_mainWindowUID = uid; }
 

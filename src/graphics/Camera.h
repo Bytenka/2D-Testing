@@ -11,7 +11,7 @@ class Camera
         Vector3d target = Vector3d(0.0, 0.0, -1.0));
     ~Camera(){};
 
-    void rotate(double pitch, double yaw);
+    void rotate(double pitch, double yaw) noexcept;
     inline void rotate(const Vector2d& by) noexcept { rotate(by.x, by.y); }
     inline void move(const Vector3d& direction) noexcept { m_position += direction; };
     inline void teleport(const Vector3d& toLocation) noexcept { m_position = toLocation; };
