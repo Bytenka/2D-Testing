@@ -60,7 +60,7 @@ void Application::runLoop()
             m_shouldTerminate = true;
     }
 
-	// Remaining windows will be deleted in the destructor
+    // Remaining windows will be deleted in the destructor
 }
 
 WindowUID Application::createWindow(unsigned width, unsigned height, const std::string& title) noexcept

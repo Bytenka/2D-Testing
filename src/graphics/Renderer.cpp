@@ -7,6 +7,7 @@
 
 #include <application/Window.h>
 #include <system/Log.h>
+#include <managers/ShaderManager.h>
 
 
 #include "Transform.h"
@@ -40,7 +41,8 @@ Renderer::~Renderer()
 
 void Renderer::init()
 {
-    m_mainShader.load("res/shaders/default2D.vert", "res/shaders/default2D.frag");
+    m_mainShader = ShaderManager::getShader("default2D");
+    //m_mainShader.load("res/shaders/default2D.vert", "res/shaders/default2D.frag");
     // m_mainShader.enable();
 
     Matrix4f model(1.0f);  // Should translate, rotate and scale using drawable properties
@@ -50,9 +52,9 @@ void Renderer::init()
     Matrix4f projection(1.0f);
     projection = maths::matrix::ortho(0.0f, (float)m_attachedWindow->getWidth(), 0.0f, (float)m_attachedWindow->getHeight());
 
-    m_mainShader.setUniformMatrix4fv("modelMat", model);
-    m_mainShader.setUniformMatrix4fv("viewMat", view);
-    m_mainShader.setUniformMatrix4fv("projectionMat", projection);
+    m_mainShader->setUniformMatrix4fv("modelMat", model);
+    m_mainShader->setUniformMatrix4fv("viewMat", view);
+    m_mainShader->setUniformMatrix4fv("projectionMat", projection);
 
     //m_mainShader.disable();
 
@@ -61,12 +63,12 @@ void Renderer::init()
     //mesh.addVertex({{1.0f, 1.0f, 0.0f}, Color(0, 0, 255)});
     //mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(0, 0, 0, 0)});
 
-    mesh.addVertex({{-1.0f, -1.0f, 0.0f}, Color(rand()%255)});
-    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand()%255)});
-    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand()%255)});
-    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand()%255)});
-    mesh.addVertex({{1.0f, 1.0f, 0.0f}, Color(rand()%255)});
-    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand()%255)});
+    mesh.addVertex({{-1.0f, -1.0f, 0.0f}, Color(rand() % 255)});
+    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand() % 255)});
+    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand() % 255)});
+    mesh.addVertex({{1.0f, -1.0f, 0.0f}, Color(rand() % 255)});
+    mesh.addVertex({{1.0f, 1.0f, 0.0f}, Color(rand() % 255)});
+    mesh.addVertex({{-1.0f, 1.0f, 0.0f}, Color(rand() % 255)});
 
     /*
     glCheck(glGenVertexArrays(1, &vao));
@@ -118,8 +120,6 @@ void Renderer::init()
 
 void Renderer::dispose()
 {
-    m_mainShader.dispose();
-
     glCheck(glDeleteBuffers(1, &ebo));
     glCheck(glDeleteBuffers(1, &vbo));
     glCheck(glDeleteBuffers(1, &vao));
@@ -129,7 +129,9 @@ void Renderer::dispose()
 
 void Renderer::drawNewFrame()
 {
-    m_mainShader.enable();
+    //auto time = glfwGetTime();
+
+    m_mainShader->enable();
 
     Vector3f position((float)m_attachedWindow->getWidth() / 2.0f, (float)m_attachedWindow->getHeight() / 2.0f, 0.0f);
     Vector3f rotation = {0.0f, 0.0f, (float)glfwGetTime()};
@@ -145,17 +147,19 @@ void Renderer::drawNewFrame()
     model = maths::matrix::rotate(model, t.rotation.y, Vector3f(0.0f, 1.0f, 0.0f));
     model = maths::matrix::rotate(model, t.rotation.z, Vector3f(0.0f, 0.0f, 1.0f));
 
-    model = maths::matrix::translate(model, t.getCenter());  // Move the object to be fake a rotation center
+    model = maths::matrix::translate(model, t.getCenter());  // Move the object to apply rotation center
     model = maths::matrix::scale(model, size);  // Scale the object accordingly
 
-    m_mainShader.setUniformMatrix4fv("modelMat", model);
+    m_mainShader->setUniformMatrix4fv("modelMat", model);
 
     glCheck(glBindVertexArray(vao));
     //glCheck(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));
     glCheck(glDrawArrays(GL_TRIANGLES, 0, mesh.getVerticesCount()));
     glCheck(glBindVertexArray(0));
 
-    m_mainShader.disable();
+    m_mainShader->disable();
+
+    //LOG_TRACE("{} fps", 1 / (glfwGetTime() - time));
 }
 
 // private:

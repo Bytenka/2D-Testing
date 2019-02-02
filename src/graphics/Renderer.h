@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Camera.h"
-#include "Shader.h"
+
+#include <memory>
 
 namespace tk {
 class Window;
+class Shader;
 
 class Renderer
 {
@@ -21,8 +23,8 @@ class Renderer
   private:
     const Window* m_attachedWindow;
 
-    Shader m_mainShader;
     Camera m_mainCamera;
+    std::shared_ptr<Shader> m_mainShader;
     bool m_initialized = false;
 };
 
